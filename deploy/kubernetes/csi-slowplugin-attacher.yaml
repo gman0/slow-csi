@@ -1,0 +1,45 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: csi-slowplugin-attacher
+  labels:
+    app: csi-slowplugin-attacher
+spec:
+  selector:
+    app: csi-slowplugin-attacher
+  ports:
+    - name: dummy
+      port: 12345
+
+---
+kind: StatefulSet
+apiVersion: apps/v1beta1
+metadata:
+  name: csi-slowplugin-attacher
+spec:
+  serviceName: "csi-slowplugin-attacher"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: csi-slowplugin-attacher
+    spec:
+      serviceAccount: csi-attacher
+      containers:
+        - name: csi-slowplugin-attacher
+          image: quay.io/k8scsi/csi-attacher:canary
+          args:
+            - "--v=5"
+            - "--csi-address=$(ADDRESS)"
+          env:
+            - name: ADDRESS
+              value: /var/lib/kubelet/plugins/csi-slowplugin/csi.sock
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/kubelet/plugins/csi-slowplugin
+      volumes:
+        - name: socket-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/csi-slowplugin
+            type: DirectoryOrCreate
