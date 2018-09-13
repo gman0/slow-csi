@@ -35,13 +35,12 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: slowplugin
+          image: slowplugin:v0.3.0
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--v=5"
             - "--drivername=csi-slowplugin"
-            - "--defaultdelay=1"
           env:
             - name: NODE_ID
               valueFrom:

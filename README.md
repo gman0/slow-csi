@@ -16,7 +16,7 @@ slow-csi plugin can be compiled in a form of a binary file or in a form of a Doc
 
 Building binary:
 ```bash
-$ make slowplugin
+$ make plugin
 ```
 
 Building Docker image:
